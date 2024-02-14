@@ -8,17 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const pg_1 = __importDefault(require("pg"));
-const { Client } = pg_1.default;
-let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+const pg_1 = require("pg");
+// let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
 function insertData() {
     return __awaiter(this, void 0, void 0, function* () {
-        const client = new Client({
-            connectionString: "postgresql://abhinandansinghbaghel2001:" + PGPASSWORD + "@ep-muddy-mouse-a5fo427v.us-east-2.aws.neon.tech/Kakarot?sslmode=require"
+        const client = new pg_1.Client({
+            connectionString: "postgresql://abhinandansinghbaghel2001:f3YCKEzNMQ2Z@ep-muddy-mouse-a5fo427v.us-east-2.aws.neon.tech/Kakarot?sslmode=require"
         });
         try {
             yield client.connect();

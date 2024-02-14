@@ -1,16 +1,13 @@
-import pkg from 'pg';
-const { Client } = pkg;
- 
+import { Client } from 'pg'
 
-
-let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+// let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
 
 
 async function insertData() {
 
     
 const client = new Client({
-    connectionString: "postgresql://abhinandansinghbaghel2001:"+PGPASSWORD+"@ep-muddy-mouse-a5fo427v.us-east-2.aws.neon.tech/Kakarot?sslmode=require"
+    connectionString: "postgresql://abhinandansinghbaghel2001:f3YCKEzNMQ2Z@ep-muddy-mouse-a5fo427v.us-east-2.aws.neon.tech/Kakarot?sslmode=require"
   })
 
 
