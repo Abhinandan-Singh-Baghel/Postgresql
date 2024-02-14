@@ -25,4 +25,62 @@ const client = new Client({
     
 }
 
-insertData();
+//insertData();
+
+async function insertUserAndAddress(
+  username: string,
+  email: string,
+  password: string,
+  city: string,
+  country: string,
+  street: string,
+  pincode: string
+){
+
+  const client = new Client({
+    connectionString: "postgresql://abhinandansinghbaghel2001:f3YCKEzNMQ2Z@ep-muddy-mouse-a5fo427v.us-east-2.aws.neon.tech/Kakarot?sslmode=require"
+  })
+
+  try{
+    await client.connect();
+
+    // Start Transaction
+
+    await client.query('BEGIN');
+
+    // Insert User
+
+    const insertUserText = `
+    INSERT INTO users (username, email, password)
+    VALUES ($1, $2 , $3)
+    RETURNING id;`
+    ;
+    const userRes = await client.query(insertUserText, [username, email, password]);
+    const userId = userRes.rows[0].id;
+
+    // Commit transaction
+    await client.query('COMMIT');
+
+    console.log('User and address inserted successfully');
+  } catch (err) {
+    await client.query('ROLLBACK'); // Roll back the transaction on error
+    console.error('Error during transaction, rolled back. ', err);
+    throw err;
+
+  } finally {
+    await client.end(); // close the client connection
+  }
+
+}
+
+// Example Usage
+
+insertUserAndAddress(
+  'Abhi',
+  'abhi.cse@iitk.ac.in',
+  'securepass123',
+  'New York',
+  'USA',
+  'XYZ street',
+  '2001'
+);
