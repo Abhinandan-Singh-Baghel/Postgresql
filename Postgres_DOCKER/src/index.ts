@@ -1,96 +1,60 @@
-// write a function to create a users table in your database.
-import { Client } from 'pg'
- 
+// The problem previously was that we were using the same client connection 
+// in all the functions , we can't reuse that so I have modified the code such that
+// the same connection is used for all the functions
+
+
+import { Client } from 'pg';
+
 const client = new Client({
   connectionString: "postgresql://postgres:mysecretpassword@localhost/postgres"
-})
+});
 
-// async function createUsersTable() {
-//     await client.connect()
-//     const result = await client.query(`
-//         CREATE TABLE users (
-//             id SERIAL PRIMARY KEY,
-//             username VARCHAR(50) UNIQUE NOT NULL,
-//             email VARCHAR(255) UNIQUE NOT NULL,
-//             password VARCHAR(255) NOT NULL,
-//             created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-//         );
-//     `)
-//     await client.end();
-//     console.log(result)
-// }
+// Connect to the database
+client.connect()
+  .then(() => {
+    // Once connected, call all the functions
+    createUsersTable();
+    insertIntoUsers();
+    getUsers();
+  })
+  .catch(err => console.error('Error connecting to PostgreSQL:', err));
 
-async function endConnection(){
-    await client.end();
-
+async function createUsersTable() {
+    try {
+        const result = await client.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        console.log(result);
+    } catch (err) {
+        console.error('Error creating users table:', err);
+    }
 }
 
-
-// createUsersTable();
-
-endConnection();
-
-async function insertIntoUsers(){
-    await client.connect();
-    const result = await client.query(`
-    INSERT INTO users (username, email, password)
-VALUES ('Abhinandan', 'abhi@gmail.com', '123456');`
-)
-await client.end();
-
-console.log(result);
+async function insertIntoUsers() {
+    try {
+        const result = await client.query(`
+            INSERT INTO users (username, email, password)
+            VALUES ('Abhinandan', 'abhi@gmail.com', '123456');
+        `);
+        console.log(result);
+    } catch (err) {
+        console.error('Error inserting into users:', err);
+    }
 }
-
-
-insertIntoUsers();
-
 
 async function getUsers() {
-
-    await client.connect();
-    const result = await client.query(`
-    SELECT * FROM users;`)
-
-    await client.end();
-
-    console.log(result);
-
-    
+    try {
+        const result = await client.query(`
+            SELECT * FROM users;
+        `);
+        console.log(result);
+    } catch (err) {
+        console.error('Error retrieving users:', err);
+    }
 }
-
-
-getUsers();
-
-
-
-
-// import { Client } from "pg";
-
-// // Async function to insert data into a table
-
-// async function insertData() {
-
-//     const client = new Client({
-//         host: 'localhost',
-//         port: 5432,
-//         database: 'postgres',
-//         user: 'postgres',
-//         password: 'mysecretpassword',
-//     });
-
-//     try {
-//         await client.connect();  // establish the connection
-//         const insertQuery = "INSERT INTO users (username, email, password) VALUES ('username2', 'user3@example.com', 'user_password');";
-//         const res = await client.query(insertQuery);
-//         console.log('Insertion success:', res); // Output insertion result
-
-//     } catch (err){
-//         console.error('Error during the insertion:', err);
-
-//     } finally {
-//         await client.end(); // Close the client connection
-//     }
-    
-// }
-
-// insertData();
